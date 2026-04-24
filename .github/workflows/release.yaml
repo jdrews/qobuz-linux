@@ -1,15 +1,18 @@
-name: Build and Verify
+name: Release
 
 on:
   push:
-    branches:
-      - main
-  pull_request:
+    tags:
+      - '*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
 
 jobs:
   build-and-upload:
     name: Build for ${{ matrix.arch }}
-
     strategy:
       fail-fast: false
       matrix:
@@ -21,10 +24,9 @@ jobs:
 
     runs-on: ${{ matrix.runner }}
     permissions:
-      contents: write
+      contents: read
 
     steps:
-
     - name: Check out Repository
       uses: actions/checkout@v4
 
@@ -49,7 +51,6 @@ jobs:
         flatpak remote-add --user --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
         flatpak --user remote-modify --enable flathub
         git config --global --add safe.directory ${{ github.workspace }}
-        # Generate flatpak sources from the exact package-lock.json that npm ci uses
         rm -f generated-sources.json
         flatpak-node-generator --no-requests-cache npm package-lock.json
         flatpak-builder --arch=${{ matrix.arch }} --jobs=1 --user --disable-rofiles-fuse --install-deps-from=flathub --force-clean --repo=repo _build flatpak/dev.mukkematti.qobuz-linux.yml
@@ -60,8 +61,8 @@ jobs:
         name: flatpak-repo-${{ matrix.arch }}
         path: repo
 
-  verify-bundle:
-    name: Verify Multi-arch Bundle
+  package-and-release:
+    name: Package and Release
     needs: build-and-upload
     runs-on: ubuntu-latest
     permissions:
@@ -89,20 +90,22 @@ jobs:
         ostree --repo=final-repo pull-local --all repos/flatpak-repo-aarch64
         flatpak build-update-repo final-repo
 
-    - name: Get Version and Commit
-      id: get_version
+    - name: Set Release Tag
+      id: set_tag
       run: |
-        echo "VERSION=$(jq -r .version package.json)" >> $GITHUB_ENV
-        echo "COMMIT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          echo "TAG_NAME=${{ github.event.inputs.tag }}" >> $GITHUB_ENV
+        else
+          echo "TAG_NAME=${{ github.ref_name }}" >> $GITHUB_ENV
+        fi
 
     - name: Create multi-arch Flatpak bundle
       run: |
-        flatpak build-bundle final-repo qobuz-linux-${{ env.VERSION }}.flatpak dev.mukkematti.qobuz-linux
+        flatpak build-bundle final-repo qobuz-linux-${{ env.TAG_NAME }}.flatpak dev.mukkematti.qobuz-linux
 
-    - name: Upload Bundle Artifact
-      uses: actions/upload-artifact@v4
+    - name: Create GitHub Release
+      uses: "softprops/action-gh-release@v2"
       with:
-        name: qobuz-linux-bundle
-        path: qobuz-linux-${{ env.VERSION }}.flatpak
-
-    
+        tag_name: "${{ env.TAG_NAME }}"
+        generate_release_notes: true
+        files: qobuz-linux-${{ env.TAG_NAME }}.flatpak

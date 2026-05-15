@@ -85,7 +85,9 @@ jobs:
     - name: Merge Flatpak repos
       run: |
         ostree --repo=final-repo init --mode=archive
-        mkdir -p final-repo/refs/remotes
+        # Create the missing directories in the source repos to satisfy the OSTree scanner
+        mkdir -p repos/flatpak-repo-x86_64/refs/remotes
+        mkdir -p repos/flatpak-repo-aarch64/refs/remotes
         ostree --repo=final-repo pull-local repos/flatpak-repo-x86_64
         ostree --repo=final-repo pull-local repos/flatpak-repo-aarch64
         flatpak build-update-repo final-repo

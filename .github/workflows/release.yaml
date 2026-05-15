@@ -86,8 +86,8 @@ jobs:
       run: |
         ostree --repo=final-repo init --mode=archive
         mkdir -p final-repo/refs/remotes
-        ostree --repo=final-repo pull-local --all repos/flatpak-repo-x86_64
-        ostree --repo=final-repo pull-local --all repos/flatpak-repo-aarch64
+        ostree --repo=final-repo pull-local repos/flatpak-repo-x86_64
+        ostree --repo=final-repo pull-local repos/flatpak-repo-aarch64
         flatpak build-update-repo final-repo
 
     - name: Set Release Tag

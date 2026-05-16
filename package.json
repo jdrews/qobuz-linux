@@ -38,6 +38,7 @@
   "homepage": "https://github.com/mattipunkt/qobuz-linux#readme",
   "devDependencies": {
     "electron": "^39.8.5",
-    "electron-builder": "^26.0.12"
+    "electron-builder": "^26.0.12",
+    "@electron/node-gyp": "https://codeload.github.com/electron/node-gyp/tar.gz/06b29aafb7708acef8b3669835c8a7857ebc92d2"
   }
 }

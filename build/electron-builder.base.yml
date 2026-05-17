@@ -1,8 +1,15 @@
 appId: dev.mukkematti.qobuz-linux
-electronVersion: 31.7.7
+electronVersion: 39.8.5
 electronDownload:
-  version: 31.7.7
+  version: 39.8.5
   mirror: https://github.com/electron/electron/releases/download/v
+files:
+  - "**/*"
+  - "!.flatpak-builder"
+  - "!_build"
+  - "!repo"
+  - "!flatpak-node"
+  - "!flatpak"
 snap:
   plugs:
     - default

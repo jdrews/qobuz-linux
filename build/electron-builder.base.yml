@@ -3,6 +3,13 @@ electronVersion: 39.8.5
 electronDownload:
   version: 39.8.5
   mirror: https://github.com/electron/electron/releases/download/v
+files:
+  - "**/*"
+  - "!.flatpak-builder"
+  - "!_build"
+  - "!repo"
+  - "!flatpak-node"
+  - "!flatpak"
 snap:
   plugs:
     - default

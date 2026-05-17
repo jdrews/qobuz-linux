@@ -134,3 +134,10 @@ venv/
 
 # Crush directory
 .crush
+
+# Flatpak build directories and caches
+.flatpak-builder/
+_build/
+flatpak-node/
+repo/
+

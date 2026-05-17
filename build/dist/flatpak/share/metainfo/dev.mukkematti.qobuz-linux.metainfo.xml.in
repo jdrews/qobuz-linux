@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <component type="desktop-application">
   <id>dev.mukkematti.qobuz-linux</id>
-  <name>Qubuz</name>
+  <name>Qobuz</name>
   <summary>A small electron-wrapper for Qobuz streaming service</summary>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>MIT</project_license>

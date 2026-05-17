@@ -140,4 +140,4 @@ venv/
 _build/
 flatpak-node/
 repo/
-
+*.flatpak

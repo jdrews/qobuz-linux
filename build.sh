@@ -49,6 +49,11 @@ echo -e "\n${YELLOW}[3/3] Building Flatpak application package (offline sandbox)
 echo -e "  Running flatpak-builder..."
 flatpak-builder --arch=x86_64 --jobs=1 --user --disable-rofiles-fuse --install-deps-from=flathub --force-clean --repo=repo _build flatpak/dev.mukkematti.qobuz-linux.yml
 
+# Step 4: Bundle into a Flatpak bundle
+echo -e "\n${YELLOW}[4/4] Bundling Flatpak application...${NC}"
+echo -e "  Running flatpak build-bundle..."
+flatpak build-bundle --arch=x86_64 repo qobuz-linux.flatpak dev.mukkematti.qobuz-linux
+
 # ----------------------------------------------------
 # Completion Instructions
 # ----------------------------------------------------

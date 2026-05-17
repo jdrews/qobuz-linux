@@ -41,6 +41,35 @@ jobs:
       with:
         cache: 'npm'
 
+    - name: Set App Version
+      run: |
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          TAG_NAME="${{ github.event.inputs.tag }}"
+        else
+          TAG_NAME="${{ github.ref_name }}"
+        fi
+        # Strip 'v' prefix if present for npm
+        VERSION="${TAG_NAME#v}"
+        echo "Updating package version to $VERSION"
+        npm version "$VERSION" --allow-same-version --no-git-tag-version
+        
+        # Flatpak version displayed in 'flatpak list' comes from the NEWS file
+        # via appstreamcli news-to-metainfo. Let's prepend a release if missing.
+        if ! grep -q "Version $VERSION" NEWS; then
+          TODAY=$(date +%Y-%m-%d)
+          {
+            echo "Version $VERSION"
+            echo "~~~~~~~~~~~~~~~~~~~~"
+            echo "Released: $TODAY"
+            echo ""
+            echo "Features:"
+            echo "* Release $VERSION"
+            echo ""
+            cat NEWS
+          } > NEWS.tmp
+          mv NEWS.tmp NEWS
+        fi
+
     - name: Generate Flatpak sources
       run: |
         rm -f flatpak/generated-sources.json

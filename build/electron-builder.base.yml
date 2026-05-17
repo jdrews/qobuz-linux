@@ -1,8 +1,10 @@
 appId: dev.mukkematti.qobuz-linux
 electronVersion: 39.8.5
 electronDownload:
-  version: 39.8.5
-  mirror: https://github.com/electron/electron/releases/download/v
+  cache: /run/build/qobuz-linux/flatpak-node/cache/electron
+  # Safe since we already verify hashes during flatpak-node-generator generated-sources.json.
+  # Required since flatpak-builder isolates the build environment and cannot reach the network to download hashes on its own.
+  isVerifyChecksum: false
 files:
   - "**/*"
   - "!.flatpak-builder"

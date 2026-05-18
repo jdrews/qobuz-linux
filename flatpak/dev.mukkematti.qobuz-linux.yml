@@ -15,6 +15,7 @@ finish-args:
   - --socket=pulseaudio
   - --share=network
   - --talk-name=org.mpris.MediaPlayer2.*
+  - --talk-name=org.kde.StatusNotifierWatcher
 build-options:
   append-path: /usr/lib/sdk/node24/bin
   env:

@@ -1,18 +1,19 @@
-> This is a fork of https://github.com/mattipunkt/qobuz-linux after it was archived. I plan to continue updating it, focusing on security and bug fixes. 
+> This is a fork of https://github.com/mattipunkt/qobuz-linux after it was archived. I will continue updating it, focusing on security and bug fixes. 
 
 
 # Qobuz for Linux
 ![Qobuz-for-Linux-logo](https://raw.githubusercontent.com/mattipunkt/qobuz-linux/a1c4e8fddd63a4b899955c36aa9c55c75020d73c/build/icons/128x128.png)
 
-This is an UNOFFICIAL wrapper around the Qobuz Webplayer. Since it uses Electron, playing HiRes through widevine is also possible.
+This is an UNOFFICIAL wrapper around the Qobuz Webplayer. Since it uses Electron, playing HiRes through widevine is also possible.  
 I built this app, because my main browser Firefox is only playing MP3-quality streams, even if I enable DRM-features in settings.
 
-### TO-DO
-- [X] ~~(Implementing MPRIS Support)~~ seems to work, my arch-test machine seemed to have missing dependencies -> mint shows it works
-- [X] ~~Build .deb and .rpm~~ (go to releases :))
-- [ ] push to flathub
-- [X] ~~push to Snap Store~~
-- [ ] Maybe more ;)
+## Installation
+Go to [releases](https://github.com/mattipunkt/qobuz-linux/releases) and download the implementation you like.
+I recommend installing as a flatpak. Download the `.flatpak`-file and run the following command:
+```bash
+flatpak install qobuz-linux_1.0.0-x86_64.flatpak
+```
+You may be prompted to enter a root password.
 
 ## Building
 
@@ -38,22 +39,14 @@ $ flatpak run org.flatpak.Builder --repo=_repo --force-clean _build flatpak/dev.
 $ flatpak build-bundle _repo qobuz-linux.flatpak dev.mukkematti.qobuz-linux
 ```
 
-## Installation
-Go to [releases](https://github.com/mattipunkt/qobuz-linux/releases) and download the implementation you like.
-I recommend installing as a flatpak. Download the `.flatpak`-file and run the following command:
+## Troubleshooting
+
+### Media Key buttons don't work
+
+If the media key buttons (Play/Pause, Next/Previous) don't work, it's likely due to missing MPRIS support for Electron in flatpak. Try the following command:
 ```bash
-flatpak install qobuz-linux_1.0.0-x86_64.flatpak
+flatpak override --user --own-name=org.mpris.MediaPlayer2.chromium.* dev.mukkematti.qobuz-linux
 ```
-You may be prompted to enter a root password.
-
-**Install as snap**
-
-On the releases-page, download the `.snap`-file. Install snap with the following command:
-```bash
-snap install qobuz-linux_1.0.0_amd64.snap --dangerous
-```
-
-
 
 ## Acknowledgements
 - The Icon was made by me. It used the following graphics:

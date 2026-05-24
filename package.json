@@ -44,5 +44,8 @@
   },
   "overrides": {
     "tar": "^7.5.15"
+  },
+  "resolutions": {
+    "tar": "^7.5.15"
   }
 }

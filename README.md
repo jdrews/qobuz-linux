@@ -53,7 +53,14 @@ On the releases-page, download the `.snap`-file. Install snap with the following
 snap install qobuz-linux_1.0.0_amd64.snap --dangerous
 ```
 
+## Troubleshooting
 
+### Media Key buttons don't work
+
+If the media key buttons (Play/Pause, Next/Previous) don't work, it's likely due to missing MPRIS support for Electron in flatpak. Try the following command:
+```bash
+flatpak override --user --own-name=org.mpris.MediaPlayer2.chromium.* dev.mukkematti.qobuz-linux
+```
 
 ## Acknowledgements
 - The Icon was made by me. It used the following graphics:

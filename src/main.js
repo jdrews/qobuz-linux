@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, Tray } = require('electron')
+const { app, BrowserWindow, Menu, Tray, nativeImage } = require('electron')
 var path = require('path');
 
 let appIcon = null
@@ -56,7 +56,9 @@ app.whenReady().then(() => {
 
     createWindow()
     
-    appIcon = new Tray(path.join(__dirname, "../resources/icons/clearicon.png"))
+    const iconPath = path.join(__dirname, "../resources/icons/clearicon.png");
+    const trayIcon = nativeImage.createFromPath(iconPath);
+    appIcon = new Tray(trayIcon)
     const contextMenu = Menu.buildFromTemplate([
       { label: 'Quit', click() {
         win.destroy()

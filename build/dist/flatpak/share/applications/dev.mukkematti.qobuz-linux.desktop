@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Qobuz
-Exec=run.sh %U
+Exec=qobuz-linux %U
 Terminal=false
 Type=Application
 Icon=dev.mukkematti.qobuz-linux

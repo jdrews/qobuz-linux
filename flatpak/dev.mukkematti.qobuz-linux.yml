@@ -16,6 +16,7 @@ finish-args:
   - --share=network
   - --talk-name=org.mpris.MediaPlayer2.*
   - --own-name=org.mpris.MediaPlayer2.chromium.*
+  - --talk-name=org.kde.StatusNotifierWatcher
 build-options:
   append-path: /usr/lib/sdk/node24/bin
   env:
@@ -51,8 +52,19 @@ modules:
       - cp -a dist/linux*unpacked/* ${FLATPAK_DEST}/
       - mkdir -p ${FLATPAK_DEST}/bin
       - |
-        echo '#!/bin/sh' > ${FLATPAK_DEST}/bin/qobuz-linux
-        echo 'exec /app/qobuz-linux --no-sandbox "$@"' >> ${FLATPAK_DEST}/bin/qobuz-linux
+        cat <<'EOF' > ${FLATPAK_DEST}/bin/qobuz-linux
+        #!/bin/bash
+        
+        WL_DISPLAY="${WAYLAND_DISPLAY:-"wayland-0"}"
+        EXTRA_ARGS=""
+        
+        if [[ -e "${XDG_RUNTIME_DIR}/${WL_DISPLAY}" || -e "/${WL_DISPLAY}" ]]; then
+            echo "Debug: Enabling Wayland backend"
+            EXTRA_ARGS="--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime --wayland-text-input-version=3"
+        fi
+        
+        exec /app/qobuz-linux --no-sandbox $EXTRA_ARGS "$@"
+        EOF
         chmod +x ${FLATPAK_DEST}/bin/qobuz-linux
       - mkdir -p ${FLATPAK_DEST}/share/metainfo
       - appstreamcli news-to-metainfo --format=markdown NEWS build/dist/flatpak/share/metainfo/${FLATPAK_ID}.metainfo.xml.in ${FLATPAK_DEST}/share/metainfo/${FLATPAK_ID}.metainfo.xml

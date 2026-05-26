@@ -60,6 +60,8 @@ app.whenReady().then(() => {
     const trayIcon = nativeImage.createFromPath(iconPath);
     appIcon = new Tray(trayIcon)
     const contextMenu = Menu.buildFromTemplate([
+      { label: `Version ${app.getVersion()}`, enabled: false },
+      { type: 'separator' },
       { label: 'Quit', click() {
         win.destroy()
       } },

@@ -62,15 +62,9 @@ app.whenReady().then(() => {
     const contextMenu = Menu.buildFromTemplate([
       { label: `Version ${app.getVersion()}`, enabled: false },
       { type: 'separator' },
-      { label: 'Quit', click() {
-        win.destroy()
-      } },
-      { label: 'Hide', click() {
-        win.hide()
-      }},
-      { label: 'Show', click() {
-        win.show()
-      }}
+      { label: 'Hide', click() { win.hide() }},
+      { label: 'Show', click() { win.show() }},
+      { label: 'Quit', click() { win.destroy() }},
     ])
 
   

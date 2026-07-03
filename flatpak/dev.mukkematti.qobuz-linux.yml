@@ -45,10 +45,22 @@ modules:
         DEBUG: '@electron/get:*'
 
     build-commands:
+      - |
+        # Set architecture args based on platform (Electron 43 / Chromium 150)
+        case "$(uname -m)" in
+          x86_64) export ELECTRON_BUILDER_ARCH_ARGS="--x64" ;;
+          aarch64|armv7l) export ELECTRON_BUILDER_ARCH_ARGS="--arm" ;;
+          *) export ELECTRON_BUILDER_ARCH_ARGS="--x64" ;;
+        esac
       - npm install --offline --no-audit --no-fund --ignore-scripts
       - |
-        . ../flatpak-node/electron-builder-arch-args.sh
-        npm run builder -- -c ./build/electron-builder.base.yml $ELECTRON_BUILDER_ARCH_ARGS --linux --dir --config.compression=store
+        # Run electron-builder directly (not via npm run)
+        npx electron-builder \
+          -c ./build/electron-builder.base.yml \
+          $ELECTRON_BUILDER_ARCH_ARGS \
+          --linux \
+          --dir \
+          --config.compression=store
       - cp -a dist/linux*unpacked/* ${FLATPAK_DEST}/
       - mkdir -p ${FLATPAK_DEST}/bin
       - |

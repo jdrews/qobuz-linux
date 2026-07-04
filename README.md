@@ -48,6 +48,15 @@ If the media key buttons (Play/Pause, Next/Previous) don't work, it's likely due
 flatpak override --user --own-name=org.mpris.MediaPlayer2.chromium.* dev.mukkematti.qobuz-linux
 ```
 
+### Running locally in dev mode
+
+After pulling dependencies via `npm i`, you can run the app directly with `npm start`. To open DevTools, set `DEVTOOLS=1`:
+
+```bash
+export DEVTOOLS=1 && npm start
+```
+
+
 ## Acknowledgements
 - The Icon was made by me. It used the following graphics:
     - `cd-symbolic`-icon from Adwaita icon package (Creative Commons Zero v1.0 Universell)

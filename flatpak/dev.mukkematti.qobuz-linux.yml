@@ -45,20 +45,31 @@ modules:
         DEBUG: '@electron/get:*'
 
     build-commands:
-      - npm install --offline --no-audit --no-fund --ignore-scripts
       - |
-        . ../flatpak-node/electron-builder-arch-args.sh
-        npm run builder -- -c ./build/electron-builder.base.yml $ELECTRON_BUILDER_ARCH_ARGS --linux --dir --config.compression=store
+        # Set architecture args based on platform (Electron 43 / Chromium 150)
+        case "$(uname -m)" in
+          x86_64) export ELECTRON_BUILDER_ARCH_ARGS="--x64" ;;
+          aarch64|armv7l) export ELECTRON_BUILDER_ARCH_ARGS="--arm" ;;
+          *) export ELECTRON_BUILDER_ARCH_ARGS="--x64" ;;
+        esac
+        npm install --offline --no-audit --no-fund --ignore-scripts 2>&1 | tee npm-install.log
+        echo "Running electron-builder..."
+        ./node_modules/.bin/electron-builder \
+          -c ./build/electron-builder.base.yml \
+          $ELECTRON_BUILDER_ARCH_ARGS \
+          --linux \
+          --dir \
+          --config.compression=store 2>&1 | tee electron-builder.log
+      - echo "Checking build output..." && ls -la dist/linux*unpacked/ || { echo "ERROR: No build output!"; exit 1; }
       - cp -a dist/linux*unpacked/* ${FLATPAK_DEST}/
       - mkdir -p ${FLATPAK_DEST}/bin
       - |
         cat <<'EOF' > ${FLATPAK_DEST}/bin/qobuz-linux
         #!/bin/bash
         
-        WL_DISPLAY="${WAYLAND_DISPLAY:-"wayland-0"}"
         EXTRA_ARGS=""
         
-        if [[ -e "${XDG_RUNTIME_DIR}/${WL_DISPLAY}" || -e "/${WL_DISPLAY}" ]]; then
+        if [[ -e "${XDG_RUNTIME_DIR}/wayland-0" || -e "/wayland-0" ]]; then
             echo "Debug: Enabling Wayland backend"
             EXTRA_ARGS="--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime --wayland-text-input-version=3"
         fi

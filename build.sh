@@ -15,7 +15,6 @@ echo -e "\n${YELLOW}[1/4] Regenerating Flatpak sources..."
 if [ ! -f "flatpak/generated-sources.json" ]; then
     echo -e "${BLUE}  Regenerating flatpak-node-generator sources...${NC}"
 fi
-rm -rf node_modules
 flatpak-node-generator --no-requests-cache npm package-lock.json --output flatpak/generated-sources.json
 
 # Step 2: Install Local Development Dependencies

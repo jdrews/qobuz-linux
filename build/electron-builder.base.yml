@@ -1,5 +1,5 @@
 appId: dev.mukkematti.qobuz-linux
-electronVersion: 43.0.0
+electronVersion: 39.8.5
 electronDownload:
   # Safe since we already verify hashes during flatpak-node-generator generated-sources.json.
   # Required since flatpak-builder isolates the build environment and cannot reach the network to download hashes on its own.

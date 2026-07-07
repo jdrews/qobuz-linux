@@ -27,6 +27,11 @@ FLATPAK_PATHS=(
     "repo"
 )
 
+# System-level caches (outside repo, but tied to this app)
+SYSTEM_CACHE_PATHS=(
+    "$HOME/.local/share/flatpak-builder/cache/dev.mukkematti.qobuz-linux*"
+)
+
 # Helper function to remove a path if it exists (handles files, directories, and symlinks)
 clean_path() {
     local target="$1"
@@ -42,18 +47,33 @@ clean_path() {
 echo -e "${BLUE}=== Qobuz Linux Clean & Preparation Script ===${NC}"
 
 # 1. Clean Local Workstation npm & Electron Caches
-echo -e "\n${YELLOW}[1/3] Cleaning Node & Build Caches...${NC}"
+echo -e "\n${YELLOW}[1/4] Cleaning Node & Build Caches...${NC}"
 for target in "${NODE_BUILD_PATHS[@]}"; do
     clean_path "$target"
 done
 
 # 2. Clean Flatpak Caches
-echo -e "\n${YELLOW}[2/3] Cleaning Flatpak Build Artifacts...${NC}"
+echo -e "\n${YELLOW}[2/4] Cleaning Flatpak Build Artifacts...${NC}"
 for target in "${FLATPAK_PATHS[@]}"; do
     clean_path "$target"
 done
 
-# 3. Success message
+# 3. Clean System-Level Flatpak-Builder Cache
+echo -e "\n${YELLOW}[3/4] Cleaning System-Level Flatpak-Builder Cache...${NC}"
+for target in "${SYSTEM_CACHE_PATHS[@]}"; do
+    clean_path "$target"
+done
+
+# 4. Clean electron-builder artifacts inside source tree
+echo -e "\n${YELLOW}[4/4] Cleaning Electron Builder Artifacts...${NC}"
+for target in build/dist/linux*unpacked; do
+    if [ -d "$target" ]; then
+        echo -e "  Removing $target..."
+        rm -rf "$target"
+    fi
+done
+
+# 5. Success message
 echo -e "\n${GREEN}=== Workspace Cleaned Successfully! ===${NC}"
 echo -e "${GREEN}You can now run a clean build pipeline:${NC}"
 echo -e "  1. Regenerate sources safely (without local node_modules interfering):"
